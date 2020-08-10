@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" type="text/css"> 
+    <title>Hello, world!</title>
+  </head>
+  <body>
+    <h1>Hello, world!</h1>
+
+    <!-- BREADCRUMB -->
+    <div id="breadcrumb">
+        <div class="container">
+            <ul class="breadcrumb">
+                <li><a href="/">Home</a></li>
+                <li><a href="/">{{ product.category.all.first }}</a></li>
+                <li class="active">{{ product.name }}</li>
+            </ul>
+        </div>
+    </div>
+    <!-- /BREADCRUMB -->
+
+     <!-- section -->
+    <div class="section">
+      <!-- container -->
+      <div class="container">
+          <!-- row -->
+          <div class="row">
+              <!--  Product Details -->
+              <div class="product product-details clearfix">
+                  <div class="col-md-6">
+                      <div id="product-main-view">
+                          {% if variant.image_id > 0 %}
+                              <div class="product-view">
+                                  <img src="{{ product.image.url }}" alt="" style="height: 400px">
+                              </div>
+                          {% else %}
+                              <div class="product-view">
+                                  <img src="{{ product.image.url }}" alt="" style="height: 400px">
+                              </div>
+                          {% endif %}
+
+                          {% for rs in images %}
+                              <div  class="product-view active">
+                                  <img src="{{ rs.image.url }}" alt="" style="height: 400px">
+                              </div>
+                          {% endfor %}
+
+                      </div>
+                  </div>
+             </div>
+             <div>
+                 <table class="table table-striped">
+                    <tbody>
+                        {% for tech_spec in product.tech_spec.all %}
+                            <tr>
+                                <td>{{ tech_spec.attribute }} :</td>
+                                <td>{{ tech_spec.value }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+            <div class="d-md-flex flex-md-equal w-100 my-md-3 pl-md-3">
+                {{ product.description|safe }}
+            </div>
+          </div>
+      </div>
+      <!-- /Product Details -->
+    </div>
+  <!-- /row -->
+        </div>
+  <!-- /container -->
+  </div>
+  <!-- /section -->
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+  </body>
+</html>

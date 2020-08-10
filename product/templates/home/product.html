@@ -1,0 +1,139 @@
+{% extends 'home/layout.html' %}
+
+{% load static %}
+
+{% load home_extras %}
+
+{% block title %}
+
+{% endblock %}
+
+
+{% block body %}
+
+<div>
+    <form method = "get">
+        {{ brandFilter.form.as_p }}
+        <button class="btn btn-primary" type="submit"> Search </button>
+    </form>
+</div>
+<div class="container">
+
+    <div class="row">
+        {% for product in page_obj %}
+            <div class="col-md-3 col-sm-6 col-xs-6">
+                <div class="product product-single">
+                    <div class="product-thumb">
+                        <a href="{% url 'product_page' product.id product.slug %}" class="main-btn quick-view"><i class="fa fa-search-plus"></i> Quick view</a>
+                        <img src="{{ product.image.url }}" alt="" style="height: 200px">
+                    </div>
+                    <div class="product-body">
+                        <h3 class="product-price"></h3>
+                        <div class="product-rating">
+                            <i class="fa fa-star{% if rs.avaregereview < 1%}-o empty{% endif%}"></i>
+                            <i class="fa fa-star{% if rs.avaregereview < 2%}-o empty{% endif%}"></i>
+                            <i class="fa fa-star{% if rs.avaregereview < 3%}-o empty{% endif%}"></i>
+                            <i class="fa fa-star{% if rs.avaregereview < 4%}-o empty{% endif%}"></i>
+                            <i class="fa fa-star{% if rs.avaregereview < 5%}-o empty{% endif%}"></i>
+                            {{ rs.avaregereview}}/{{ rs.countreview}}
+
+                        </div>
+                        <h2 class="product-name"><a href="#">{{ product.name }}</a></h2>
+                        <div class="product-btns">
+                            <button class="main-btn icon-btn"><i class="fa fa-heart"></i></button>
+                            <button class="main-btn icon-btn"><i class="fa fa-exchange"></i></button>
+                            {% if rs.variant == 'None'%}
+                                <a href="" class="primary-btn add-to-cart"><i class="fa fa-shopping-cart"></i> Add to Cart</a>
+                            {% else %}
+                                <a href="" class="primary-btn add-to-cart"><i class="fa fa-shopping-cart"></i> Detail</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+
+<div class="pagination">
+    <span class="step-links">
+            {% if page_obj.has_previous %}
+                <a class="btn btn-outline-info mb-4" href="{% relative_url 1 'page' request.GET.urlencode %}">&laquo; first</a>
+                <a class="btn btn-outline-info mb-4" href="{% relative_url page_obj.previous_page_number 'page' request.GET.urlencode %}">previous</a>
+            {% endif %}
+
+            {% for num in page_obj.paginator.page_range %}
+                {% if page_obj.number == num %}
+                    <a class="btn btn-info mb-4" href="{% relative_url num 'page' request.GET.urlencode %}">{{ num }}</a>
+                {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                    <a class="btn btn-outline-info mb-4" href="{% relative_url num 'page' request.GET.urlencode %}">{{ num }}</a>
+                {% endif %}
+            {% endfor %}
+
+            {% if page_obj.has_next %}
+                <a class="btn btn-outline-info mb-4" href="{% relative_url page_obj.next_page_number 'page' request.GET.urlencode %}">next</a>
+                <a class="btn btn-outline-info mb-4" href="{% relative_url page_obj.paginator.num_pages 'page' request.GET.urlencode %}">last &raquo;</a>
+            {% endif %}
+    </span>
+</div>
+
+<!--
+<div>
+    {% load mptt_tags %}
+    <div class = "container">
+        <ul class="root">
+          {% recursetree category %}
+              <li>
+                  <a href="{% url 'category' node.slug %}">{{ node.name }}</a>
+                  {% if not node.is_leaf_node %}
+                      <ul class="children">
+                          {{ children }}
+                      </ul>
+                  {% endif %}
+              </li>
+          {% endrecursetree %}
+        </ul>
+    </div>
+</div>
+-->
+
+<!--
+<div>
+    <form method = "get">
+        {{ myFilter.form }}
+        <button class="btn btn-primary" type="submit"> Search </button>
+    </form>
+</div>
+-->
+
+<!--
+<div>
+    <div> <h4> Filter By Categories </h4></div>
+
+    {% load mptt_tags %}
+    <div class = "container">
+        <ul class="root">
+          {% recursetree category %}
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="{{ node.name }}" id="defaultCheck1">
+                <label class="form-check-label" for="defaultCheck1">
+                {{ node.name }}
+                </label>
+            </div>
+          {% endrecursetree %}
+        </ul>
+    </div>
+</div>
+-->
+
+<!--
+<div>
+    <form method = "post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button class="btn btn-primary" type="submit"> Search </button>
+    </form>
+</div>
+-->
+{% endblock %}
