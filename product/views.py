@@ -71,7 +71,7 @@ def product(request):
         products = brandFilter.qs
 
     category = Category.objects.all()
-    products = Product.objects.all()
+    #products = Product.objects.all()
 
     print("Request:", request.GET)
 
