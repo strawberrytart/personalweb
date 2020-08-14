@@ -15,8 +15,8 @@ class ProductFilter(django_filters.FilterSet): #inherit from django_filters.Filt
 
 class BrandFilter(django_filters.FilterSet):
 
-    brand = django_filters.ModelMultipleChoiceFilter(queryset= Brand.objects.all(), widget=forms.CheckboxSelectMultiple)
-    category = django_filters.ModelMultipleChoiceFilter(queryset= Category.objects.all(), widget=forms.CheckboxSelectMultiple)
+    brand = django_filters.ModelMultipleChoiceFilter(widget=forms.CheckboxSelectMultiple)
+    category = django_filters.ModelMultipleChoiceFilter(widget=forms.CheckboxSelectMultiple)
     
     class Meta:
         model = Product 
