@@ -36,44 +36,73 @@ def product_page(request,id,slug):
 
 
 def product(request):
-
-    if request.GET:
-        print('A query was passed in', request.GET)
+    if request.GET: # request.GET contains query filter
         n = len(request.GET)
         print(n)
-        if n>1:  # category and brand are both queried
-            print("More than 1 query passed in.")
-            products = Product.objects.all()
-            category_0 = Category.objects.filter(level=0) # Grab all categories at node level 0 
-            brandFilter = BrandFilter(category = category_0,data= request.GET) #products filter the brands that belong to the products
-            products = brandFilter.qs
-            print("brandfilter.qs returns:", products)
-            brandFilter = BrandFilter(products = products, category = category_0, data= request.GET, queryset= products) #products filter the brands that belong to the products
-            #products = brandFilter.qs
-            #print("second brandfilter:", products)
-            
-        else:
-            if request.GET.getlist('brand'):
-                brand =request.GET.getlist('brand')
-                print('Brand id is :',brand)
-                products = Product.objects.all()
+        if n>1:
+            if request.GET.get('brand'):
+                # query contains "brand"
+                print("brand, page and category")
+                #products = Product.objects.all()
                 category_0 = Category.objects.filter(level=0) # Grab all categories at node level 0 
-                brandFilter = BrandFilter(products = products, data= request.GET) #products filter the brands that belong to the products
+                brandFilter = BrandFilter(category = category_0,data= request.GET) #filter products based on category
                 products = brandFilter.qs
-                print("Filter by Brand:", products)
-                
-            elif request.GET.get('category'):
-                categories = request.GET.getlist('category')
-                print('Category is:', categories)
+                print("brandfilter.qs returns:", products)
+                brand_list=[]
+                #create a list of brands associated with the products 
+                for p in  products:
+                    brand_id = p.brand.id
+                    if brand_id not in brand_list: #prevent duplicates in the list
+                        brand_list.append(brand_id)
+
+                print("A_list:", brand_list)
+
+                brand_query_filter = request.GET.getlist('brand') #grab the brand queries from url
+
+                print("brand:", brand_query_filter)
+
+                matched = []
+                # creates a list of brands that match the "brand" query from url from brand_list
+                for i in brand_query_filter: 
+                    if int(i) in brand_list:
+                        matched.append(i)
+
+                print("matched:",matched)
+                # QueryDict is not mutable. Create a copy to make it mutable. 
+                querydict = request.GET.copy()
+                print("Before pop:", querydict)
+                querydict.pop('brand')
+                print("After pop:", querydict)
+                for i in matched:
+                    querydict.update({'brand': i})
+                print(querydict.getlist('brand'))
+                brandFilter = BrandFilter(products = products, category = category_0, data= querydict, queryset= products) #products filter the brands that belong to the products
+            
+            else:  #"brand" not in query, only "category" and "page"
+                print("only category and page")
                 category_0 = Category.objects.filter(level=0) # Grab all categories at node level 0 
                 products = Product.objects.all()
-                brandFilter = BrandFilter(category = category_0, data= request.GET) #products filter the brands that belong to the products
+                brandFilter = BrandFilter(category = category_0, data= request.GET) #filter products based on the category query
                 products = brandFilter.qs
                 print("brand.qs:",products)
-                brandFilter = BrandFilter(products = products, category = category_0, data= request.GET)#products filter the brands that belong to the products
-                print("second:", brandFilter.qs)
-   
+                brandFilter = BrandFilter(products = products, category = category_0, data= request.GET)#filter products based on category and render brands associated with that category                print("second:", brandFilter.qs)
+
             
+        else: # query only contains either category or brand, not both
+            if request.GET.getlist('brand'):
+                products = Product.objects.all()
+                category_0 = Category.objects.filter(level=0) # Grab all categories at node level 0 
+                brandFilter = BrandFilter(products = products, data= request.GET) # filter product based on the brand query
+                products = brandFilter.qs 
+                
+            elif request.GET.get('category'):
+                category_0 = Category.objects.filter(level=0) # Grab all categories at node level 0 
+                products = Product.objects.all()
+                brandFilter = BrandFilter(category = category_0, data= request.GET) #filter products based on the category query
+                products = brandFilter.qs
+                print("brand.qs:",products)
+                brandFilter = BrandFilter(products = products, category = category_0, data= request.GET)#filter products based on category and render brands associated with that category                print("second:", brandFilter.qs)
+   
             elif request.GET.get('page'):
                 print("Page turnt.")
                 products = Product.objects.all()
@@ -81,22 +110,14 @@ def product(request):
                 brandFilter = BrandFilter(products = products, category = category_0, data= request.GET, queryset= products) #products filter the brands that belong to the products
     
     else:
-        print('Request is empty.')
+        # request.GET is empty, no query sent. 
         products = Product.objects.all()
         category_0 = Category.objects.filter(level=0) # Grab all categories at node level 0 
         brandFilter = BrandFilter(products = products, category = category_0, data= request.GET) #products filter the brands that belong to the products
         products = brandFilter.qs
-        print(products)
+
 
     category = Category.objects.all()
-    #products = Product.objects.all()
-
-    #print("Request:", request.GET)
-
-
-
-    #print("Products:",products)
-
     paginator = Paginator(products,3)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
