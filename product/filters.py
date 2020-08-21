@@ -18,6 +18,27 @@ class BrandFilter(django_filters.FilterSet):
     brand = django_filters.ModelMultipleChoiceFilter(widget=forms.CheckboxSelectMultiple)
     category = django_filters.ModelMultipleChoiceFilter(widget=forms.CheckboxSelectMultiple)
     
+
+    #order_by_field = 'ordering'
+    ordering = django_filters.OrderingFilter(
+
+        choices = (
+            ('-is_featured', 'Featured'),
+            ('-created_at', 'Date, New to Old'),
+            ('created_at', 'Date, Old to New' ),
+        ),
+        fields = (
+            ('is_featured', 'featured'), #{model field name, parameter in the URL}
+            ('created_at', 'created'),
+            ('price', 'price'),
+        ),
+        field_labels = {
+            'is_featured': 'Featured', #{model field name, human readable label}
+            'created_at': 'Date',
+            'price': 'Price',
+        }
+    )
+
     class Meta:
         model = Product 
         fields = ('brand','category') 

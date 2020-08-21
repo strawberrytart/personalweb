@@ -58,7 +58,7 @@ class DraggableCategoryAdmin(DraggableMPTTAdmin):
     related_products_cumulative_count.short_description = 'Related products (in tree)'
 
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ('name','brand','created_at', 'get_categories','image_tag')
+    list_display = ('name','brand','created_at', 'get_categories','image_tag', 'is_featured')
     readonly_fields = ('image_tag',)
     inlines = [
         ProductImageInline,

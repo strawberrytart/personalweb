@@ -1,10 +1,29 @@
 {% extends 'home/layout.html' %}
 
+{% load static %}
+
 {% block title %}
 
 {% endblock %}
 
-{% block body %}
+{% load home_extras %}
+
+{% block body %} 
+
+    <!-- BREADCRUMB -->
+    <div id="breadcrumb">
+        <div class="container">
+            <ul class="breadcrumb">
+                <li><a href="/">Home</a></li>
+                <li><a href="/">Products</a></li>
+                {% for parent in cat.first.get_ancestors %}
+                    <li><a href="/">{{ parent.name }}</a></li>
+                {% endfor %} 
+                <li><a href="/">{{ cat.first.name }}</a></li>            
+            </ul>
+        </div>
+    </div>
+    <!-- /BREADCRUMB -->
 
     <div>
         {% load mptt_tags %}
@@ -45,7 +64,7 @@
                 </div>
             </div>
             <!-- section title -->
-            {% for product in products %}
+            {% for product in page_obj %}
                 <!-- Product Single -->
                 <div class="col-md-3 col-sm-6 col-xs-6">
                     <div class="product product-single">
@@ -80,5 +99,27 @@
                 <!-- /Product Single -->
             {% endfor %}
         </div>
+    </div>
+
+    <div class="pagination">
+        <span class="step-links">
+                {% if page_obj.has_previous %}
+                    <a class="btn btn-outline-info mb-4" href="{% relative_url 1 'page' request.GET.urlencode %}">&laquo; first</a>
+                    <a class="btn btn-outline-info mb-4" href="{% relative_url page_obj.previous_page_number 'page' request.GET.urlencode %}">previous</a>
+                {% endif %}
+    
+                {% for num in page_obj.paginator.page_range %}
+                    {% if page_obj.number == num %}
+                        <a class="btn btn-info mb-4" href="{% relative_url num 'page' request.GET.urlencode %}">{{ num }}</a>
+                    {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                        <a class="btn btn-outline-info mb-4" href="{% relative_url num 'page' request.GET.urlencode %}">{{ num }}</a>
+                    {% endif %}
+                {% endfor %}
+    
+                {% if page_obj.has_next %}
+                    <a class="btn btn-outline-info mb-4" href="{% relative_url page_obj.next_page_number 'page' request.GET.urlencode %}">next</a>
+                    <a class="btn btn-outline-info mb-4" href="{% relative_url page_obj.paginator.num_pages 'page' request.GET.urlencode %}">last &raquo;</a>
+                {% endif %}
+        </span>
     </div>
 {% endblock %}

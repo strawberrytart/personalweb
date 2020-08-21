@@ -63,6 +63,13 @@ class Brand(models.Model):
     def __str__(self):
         return f"{self.name}"
 
+class ProductManager(models.Manager):
+    
+    def get_queryset(self):
+        return super().get_queryset().order_by('-is_featured')
+
+
+
 class Product(MPTTModel):
 
     Status = (
@@ -95,8 +102,11 @@ class Product(MPTTModel):
     updated_at = models.DateTimeField(auto_now = True)
     category = TreeManyToManyField(Category, blank = True)
 
+    featured_objects = ProductManager() #override base QuerySet such that now it returns featured products
+
     class Meta:
         db_table = 'product'
+        ordering = ('-is_featured',)
 
     class MPTTMeta:
         order_insertion_by = ['name']
@@ -120,7 +130,6 @@ class Product(MPTTModel):
     def get_absolute_url(self):
         
         return reverse('category_detail', kwargs={'slug':self.slug})
-
 
 class TechSpec(models.Model):
 

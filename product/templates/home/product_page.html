@@ -13,15 +13,16 @@
     <title>Hello, world!</title>
   </head>
   <body>
-    <h1>Hello, world!</h1>
-
     <!-- BREADCRUMB -->
     <div id="breadcrumb">
         <div class="container">
             <ul class="breadcrumb">
                 <li><a href="/">Home</a></li>
-                <li><a href="/">{{ product.category.all.first }}</a></li>
-                <li class="active">{{ product.name }}</li>
+                <li><a href="/">Product</a></li>
+                {% for parent in category %}
+                    <li><a href="/">{{ parent.name }}</a></li>
+                {% endfor %} 
+                <li><a href="/">{{ product.name }}</a></li>
             </ul>
         </div>
     </div>
