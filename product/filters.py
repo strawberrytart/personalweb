@@ -19,7 +19,7 @@ class BrandFilter(django_filters.FilterSet):
     category = django_filters.ModelMultipleChoiceFilter(widget=forms.CheckboxSelectMultiple)
     
 
-    #order_by_field = 'ordering'
+    
     ordering = django_filters.OrderingFilter(
 
         choices = (
